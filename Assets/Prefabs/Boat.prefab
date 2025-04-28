@@ -149,8 +149,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e61401ade95dfb54f90003d0faba559f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxKiihtyvyys: 10
-  "maxK\xE4\xE4ntyvyys": 5
+  maxKiihtyvyys: 40
+  "maxK\xE4\xE4ntyvyys": 20
   shipRB: {fileID: 6500293907470464728}
-  cameraSpot: {fileID: 0}
-  camera: {fileID: 0}
