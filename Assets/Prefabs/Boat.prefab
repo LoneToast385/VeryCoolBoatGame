@@ -31,7 +31,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0.46394, y: 6.94278, z: -5.3238864}
-  m_LocalScale: {x: 7.0544, y: 2.6443, z: 12.913}
+  m_LocalScale: {x: 7.0544, y: 5.4840136, z: 12.913}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -98,7 +98,7 @@ Rigidbody:
   m_GameObject: {fileID: 7431246666724490519}
   serializedVersion: 4
   m_Mass: 1
-  m_Drag: 0
+  m_Drag: 1
   m_AngularDrag: 0.05
   m_CenterOfMass: {x: 0, y: 0, z: 0}
   m_InertiaTensor: {x: 1, y: 1, z: 1}
@@ -149,5 +149,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e61401ade95dfb54f90003d0faba559f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxKiihtyvyys: 1
+  maxKiihtyvyys: 40
+  "maxK\xE4\xE4ntyvyys": 20
   shipRB: {fileID: 6500293907470464728}
