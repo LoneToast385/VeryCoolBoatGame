@@ -56,5 +56,5 @@
         "temp/": true,
         "Temp/": true
     },
-    "dotnet.defaultSolution": "VeryCoolBoatGame.sln"
+    "dotnet.defaultSolution": "EbinShipame.sln"
 }
