@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections;
 
 public class playerController : MonoBehaviour
 {
@@ -10,6 +11,9 @@ public class playerController : MonoBehaviour
     private float health = 100;
     private bool isInWater = false;
     public Rigidbody shipRB;
+    public GameObject Canonball;
+    private bool isShootingLeft = false;
+    private bool isShootingRight = false;
 
     void Update() {
         // -------- KIIHTYVYYS -------------
@@ -31,24 +35,38 @@ public class playerController : MonoBehaviour
         }
         // -------- KÄÄNTYVYYS -------------
         // -------- AMPUMINEN -------------
-        if(Input.GetKey("q")) {
-                shoot(1);
+        if(Input.GetKeyDown("e") && !isShootingRight) {
+                StartCoroutine(shoot(1));
         }       // Int arvot: 1 = vasen, 2 = oikea
-        if(Input.GetKey("e")) {
-                shoot(2);
+        if(Input.GetKeyDown("q") && !isShootingLeft) {
+                StartCoroutine(shoot(2));
         }
         // -------- AMPUMINEN --------------
     }
-    void shoot(int suunta) {    // Int arvot: 1 = vasen, 2 = oikea
+    IEnumerator shoot(int suunta) {    // Int arvot: 1 = oikea, 2 = vasen
         if(suunta == 1) {
+            isShootingRight = true;
             GameObject[] kanuunat = {this.transform.GetChild(0).gameObject, this.transform.GetChild(1).gameObject, this.transform.GetChild(2).gameObject};
-            for(int i = 0; i <= kanuunat.Length; i++) {
-
-            }
+            for(int i = 0; i < kanuunat.Length; i++) {
+                GameObject kanuunanpallo = Instantiate(Canonball, kanuunat[i].transform.position, kanuunat[i].transform.rotation);
+                Vector3 ampumaVoima = new Vector3(1500f, 500f, 0f);
+                kanuunanpallo.GetComponent<Rigidbody>().AddRelativeForce(ampumaVoima);
+                yield return new WaitForSeconds(0.5f);
+            }   
+            yield return new WaitForSeconds(5);
+            isShootingRight = false;
         }
         if(suunta == 2) {
+            isShootingLeft = true;
             GameObject[] kanuunat = {this.transform.GetChild(3).gameObject, this.transform.GetChild(4).gameObject, this.transform.GetChild(5).gameObject};
-            
+            for(int i = 0; i < kanuunat.Length; i++) {
+                GameObject kanuunanpallo = Instantiate(Canonball, kanuunat[i].transform.position, kanuunat[i].transform.rotation);
+                Vector3 ampumaVoima = new Vector3(1500f, 500f, 0f);
+                kanuunanpallo.GetComponent<Rigidbody>().AddRelativeForce(ampumaVoima);
+                yield return new WaitForSeconds(0.5f);
+            }   
+            yield return new WaitForSeconds(5);
+            isShootingLeft = false;
 
         }
     }
@@ -61,6 +79,12 @@ public class playerController : MonoBehaviour
         // -------- Kelluvuus --------------
         if(isInWater) 
             shipRB.AddForce(transform.up * 4 * (((0 - transform.position.y))*((0 - transform.position.y))), ForceMode.Force);
+            Vector3 xKaantonorm = new Vector3(0.002f * transform.rotation[0],0,0);
+            Quaternion xKaantonormQuat = Quaternion.Euler(xKaantonorm);
+            shipRB.MoveRotation(xKaantonormQuat);
+            Vector3 zKaantonorm = new Vector3(0,0,0.002f * transform.rotation[2]);
+            Quaternion zKaantonormQuat = Quaternion.Euler(zKaantonorm);
+            shipRB.MoveRotation(zKaantonormQuat);
         if(transform.position.y > 1)
             shipRB.AddForce(transform.up * -1, ForceMode.VelocityChange);
         // -------- Kelluvuus ---------------

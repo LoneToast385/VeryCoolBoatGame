@@ -244,7 +244,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 0
+  m_Constraints: 4
   m_CollisionDetection: 0
 --- !u!65 &2038242339613256152
 BoxCollider:
@@ -281,7 +281,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxKiihtyvyys: 40
   "maxK\xE4\xE4ntyvyys": 20
+  amountHit: 0
   shipRB: {fileID: 6500293907470464728}
+  Canonball: {fileID: 0}
 --- !u!1 &8263545141529445147
 GameObject:
   m_ObjectHideFlags: 0
