@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using System.Collections;
 
@@ -14,31 +15,49 @@ public class playerController : MonoBehaviour
     public GameObject Canonball;
     private bool isShootingLeft = false;
     private bool isShootingRight = false;
-
+    private KeyCode[] movementKeys;
+    void Start() {
+        switch(this.transform.parent.gameObject.GetComponent<playerHandler>().whichPlayer) {
+        case 1:
+            movementKeys = new KeyCode[] {
+                KeyCode.W, KeyCode.A, KeyCode.S, KeyCode.D, KeyCode.E, KeyCode.Q
+            };
+            print("Keys assigned for player 1!");
+            break;
+        case 2:
+            movementKeys = new KeyCode[] {
+                KeyCode.UpArrow, KeyCode.LeftArrow, KeyCode.DownArrow, KeyCode.RightArrow, KeyCode.PageUp, KeyCode.PageDown
+            };
+            print("Keys assigned for player 2!");
+            break;
+            default:
+                Debug.LogException(new Exception("Player Controller cannot access whichPlayer or gets bad value!"));
+                break;
+        }
+    }
     void Update() {
         // -------- KIIHTYVYYS -------------
-        if(Input.GetKey("w") && kiihtyvyys < maxKiihtyvyys) {
+        if(Input.GetKey(movementKeys[0]) && kiihtyvyys < maxKiihtyvyys) {
             kiihtyvyys += maxKiihtyvyys / 15;
         }
-        if(Input.GetKey("s") && kiihtyvyys > 0) {
+        if(Input.GetKey(movementKeys[2]) && kiihtyvyys > 0) {
             kiihtyvyys -= maxKiihtyvyys / 15;
             if(kiihtyvyys < 0) kiihtyvyys = 0;
         }
-        shipRB.AddForce(transform.forward * kiihtyvyys, ForceMode.Force);
         // -------- KIIHTYVYYS -------------
         // -------- KÄÄNTYVYYS -------------
-        if(Input.GetKey("a") && kääntyvyys > -maxKääntyvyys) {
-            kääntyvyys -= maxKääntyvyys / 15;
+        if(Input.GetKey(movementKeys[1]) && kääntyvyys > -maxKääntyvyys) {
+            kääntyvyys -= maxKääntyvyys / 30;
         }
-        if(Input.GetKey("d") && kääntyvyys < maxKääntyvyys) {
-            kääntyvyys += maxKääntyvyys / 15;
+        if(Input.GetKey(movementKeys[3]) && kääntyvyys < maxKääntyvyys) {
+            kääntyvyys += maxKääntyvyys / 30;
         }
         // -------- KÄÄNTYVYYS -------------
         // -------- AMPUMINEN -------------
-        if(Input.GetKeyDown("e") && !isShootingRight) {
+        if(Input.GetKeyDown(movementKeys[4]) && !isShootingRight) {
                 StartCoroutine(shoot(1));
         }       // Int arvot: 1 = vasen, 2 = oikea
-        if(Input.GetKeyDown("q") && !isShootingLeft) {
+        if(Input.GetKeyDown(movementKeys[5]) && !isShootingLeft) {
                 StartCoroutine(shoot(2));
         }
         // -------- AMPUMINEN --------------
@@ -48,9 +67,7 @@ public class playerController : MonoBehaviour
             isShootingRight = true;
             GameObject[] kanuunat = {this.transform.GetChild(0).gameObject, this.transform.GetChild(1).gameObject, this.transform.GetChild(2).gameObject};
             for(int i = 0; i < kanuunat.Length; i++) {
-                GameObject kanuunanpallo = Instantiate(Canonball, kanuunat[i].transform.position, kanuunat[i].transform.rotation);
-                Vector3 ampumaVoima = new Vector3(1500f, 500f, 0f);
-                kanuunanpallo.GetComponent<Rigidbody>().AddRelativeForce(ampumaVoima);
+                kanuunaPalloSpawnaus(i, kanuunat);
                 yield return new WaitForSeconds(0.5f);
             }   
             yield return new WaitForSeconds(5);
@@ -60,9 +77,7 @@ public class playerController : MonoBehaviour
             isShootingLeft = true;
             GameObject[] kanuunat = {this.transform.GetChild(3).gameObject, this.transform.GetChild(4).gameObject, this.transform.GetChild(5).gameObject};
             for(int i = 0; i < kanuunat.Length; i++) {
-                GameObject kanuunanpallo = Instantiate(Canonball, kanuunat[i].transform.position, kanuunat[i].transform.rotation);
-                Vector3 ampumaVoima = new Vector3(1500f, 500f, 0f);
-                kanuunanpallo.GetComponent<Rigidbody>().AddRelativeForce(ampumaVoima);
+                kanuunaPalloSpawnaus(i, kanuunat);
                 yield return new WaitForSeconds(0.5f);
             }   
             yield return new WaitForSeconds(5);
@@ -70,23 +85,25 @@ public class playerController : MonoBehaviour
 
         }
     }
+    void kanuunaPalloSpawnaus(int i, GameObject[] kanuunat) {
+                GameObject kanuunanpallo = Instantiate(Canonball, kanuunat[i].transform.position, kanuunat[i].transform.rotation);
+                kanuunanpallo.GetComponent<Rigidbody>().linearVelocity = this.GetComponent<Rigidbody>().linearVelocity;
+                kanuunanpallo.GetComponent<Rigidbody>().angularVelocity = this.GetComponent<Rigidbody>().angularVelocity;
+                Vector3 ampumaVoima = new Vector3(250f, 100f, 0f);
+                kanuunanpallo.GetComponent<Rigidbody>().AddRelativeForce(ampumaVoima);
+    }
     void FixedUpdate()
     {
         Vector3 laivanEulerKääntyvyys = new Vector3(0, kääntyvyys, 0);
         Quaternion deltaKääntyvyys = Quaternion.Euler(laivanEulerKääntyvyys * Time.fixedDeltaTime);
         shipRB.MoveRotation(shipRB.rotation * deltaKääntyvyys);
 
+        shipRB.AddForce(transform.forward * kiihtyvyys, ForceMode.Force);
         // -------- Kelluvuus --------------
-        if(isInWater) 
-            shipRB.AddForce(transform.up * 4 * (((0 - transform.position.y))*((0 - transform.position.y))), ForceMode.Force);
-            Vector3 xKaantonorm = new Vector3(0.002f * transform.rotation[0],0,0);
-            Quaternion xKaantonormQuat = Quaternion.Euler(xKaantonorm);
-            shipRB.MoveRotation(xKaantonormQuat);
-            Vector3 zKaantonorm = new Vector3(0,0,0.002f * transform.rotation[2]);
-            Quaternion zKaantonormQuat = Quaternion.Euler(zKaantonorm);
-            shipRB.MoveRotation(zKaantonormQuat);
-        if(transform.position.y > 1)
-            shipRB.AddForce(transform.up * -1, ForceMode.VelocityChange);
+        if(isInWater) {
+            Vector3 kelluvuusSuunta = new Vector3(0, 1 * 4 * (((0 - transform.position.y))*((0 - transform.position.y))), 0);
+            shipRB.AddForce(kelluvuusSuunta, ForceMode.Force);
+        }
         // -------- Kelluvuus ---------------
 
         // -------- Healthia ----------------
@@ -107,3 +124,11 @@ public class playerController : MonoBehaviour
         }
     }
 }
+/*
+            Vector3 xKaantonorm = new Vector3(0.002f * transform.rotation[0],0,0);
+            Quaternion xKaantonormQuat = Quaternion.Euler(xKaantonorm);
+            shipRB.MoveRotation(xKaantonormQuat);
+            Vector3 zKaantonorm = new Vector3(0,transform.rotation.y,0.002f * transform.rotation[2]);
+            Quaternion zKaantonormQuat = Quaternion.Euler(zKaantonorm);
+            shipRB.MoveRotation(zKaantonormQuat);
+*/
