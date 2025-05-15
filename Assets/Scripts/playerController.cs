@@ -5,12 +5,13 @@ using System.Collections;
 public class playerController : MonoBehaviour
 {
     private float kääntyvyys = 0;
+    public float stability = 0.3f;
     private float kiihtyvyys = 0;
-    public float maxKiihtyvyys = 10;
+    public float maxKiihtyvyys = 20;
     public float maxKääntyvyys = 1;
     public int amountHit = 0;
     private float health = 100;
-    private bool isInWater = false;
+    private float waterLevelY = 0;
     public Rigidbody shipRB;
     public GameObject Canonball;
     private bool isShootingLeft = false;
@@ -38,10 +39,10 @@ public class playerController : MonoBehaviour
     void Update() {
         // -------- KIIHTYVYYS -------------
         if(Input.GetKey(movementKeys[0]) && kiihtyvyys < maxKiihtyvyys) {
-            kiihtyvyys += maxKiihtyvyys / 15;
+            kiihtyvyys += maxKiihtyvyys / 20;
         }
         if(Input.GetKey(movementKeys[2]) && kiihtyvyys > 0) {
-            kiihtyvyys -= maxKiihtyvyys / 15;
+            kiihtyvyys -= maxKiihtyvyys / 20;
             if(kiihtyvyys < 0) kiihtyvyys = 0;
         }
         // -------- KIIHTYVYYS -------------
@@ -85,13 +86,16 @@ public class playerController : MonoBehaviour
 
         }
     }
-    void kanuunaPalloSpawnaus(int i, GameObject[] kanuunat) {
+    void kanuunaPalloSpawnaus(int i, GameObject[] kanuunat) 
+    {
                 GameObject kanuunanpallo = Instantiate(Canonball, kanuunat[i].transform.position, kanuunat[i].transform.rotation);
                 kanuunanpallo.GetComponent<Rigidbody>().linearVelocity = this.GetComponent<Rigidbody>().linearVelocity;
                 kanuunanpallo.GetComponent<Rigidbody>().angularVelocity = this.GetComponent<Rigidbody>().angularVelocity;
                 Vector3 ampumaVoima = new Vector3(250f, 100f, 0f);
                 kanuunanpallo.GetComponent<Rigidbody>().AddRelativeForce(ampumaVoima);
     }
+    public Transform[] buoyancyPoints;
+    public float buoyancyStrength = 5f;
     void FixedUpdate()
     {
         Vector3 laivanEulerKääntyvyys = new Vector3(0, kääntyvyys, 0);
@@ -100,9 +104,16 @@ public class playerController : MonoBehaviour
 
         shipRB.AddForce(transform.forward * kiihtyvyys, ForceMode.Force);
         // -------- Kelluvuus --------------
-        if(isInWater) {
-            Vector3 kelluvuusSuunta = new Vector3(0, 1 * 4 * (((0 - transform.position.y))*((0 - transform.position.y))), 0);
-            shipRB.AddForce(kelluvuusSuunta, ForceMode.Force);
+        foreach (Transform point in buoyancyPoints)
+        {
+            Vector3 worldPoint = point.position;
+
+            if (worldPoint.y < waterLevelY) // Underwater
+            {
+                float depth = waterLevelY - worldPoint.y;
+                Vector3 force = Vector3.up * depth * buoyancyStrength;
+                shipRB.AddForceAtPosition(force, worldPoint);
+            }
         }
         // -------- Kelluvuus ---------------
 
@@ -112,16 +123,6 @@ public class playerController : MonoBehaviour
             Destroy(this.gameObject);
         }
         // -------- Healthia ----------------
-    }
-    void OnTriggerEnter(Collider collider) {
-        if(collider.tag == "Water") {
-            isInWater = true;
-        }
-    }
-        void OnTriggerExit(Collider collider) {
-        if(collider.tag == "Water") {
-            isInWater = false;
-        }
     }
 }
 /*

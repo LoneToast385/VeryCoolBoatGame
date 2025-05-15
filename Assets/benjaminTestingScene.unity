@@ -641,7 +641,7 @@ Camera:
     height: 1
   near clip plane: 10.79
   far clip plane: 1000
-  field of view: 70.796814
+  field of view: 63.436085
   orthographic: 0
   orthographic size: 110.32
   m_Depth: -1
@@ -667,13 +667,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1823688464}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.28006357, y: 0, z: 0, w: 0.9599815}
-  m_LocalPosition: {x: 0, y: 92.2, z: -48.6}
+  m_LocalRotation: {x: 0.4494353, y: 0, z: -0, w: 0.89331293}
+  m_LocalPosition: {x: 0, y: 292, z: -408}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 32.528, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 53.415, y: 0, z: 0}
 --- !u!114 &1823688468
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -914,10 +914,74 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player1Handler
       objectReference: {fileID: 0}
+    - target: {fileID: 6119897187542907184, guid: 5852b5c11bc454e4497c731bda660964, type: 3}
+      propertyPath: buoyancyStrength
+      value: 5
+      objectReference: {fileID: 0}
     - target: {fileID: 6905135775129990371, guid: 5852b5c11bc454e4497c731bda660964, type: 3}
       propertyPath: camera
       value: 
       objectReference: {fileID: 1823688464}
+    - target: {fileID: 6905135775129990371, guid: 5852b5c11bc454e4497c731bda660964, type: 3}
+      propertyPath: smoothSpeed
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 7250249254252493494, guid: 5852b5c11bc454e4497c731bda660964, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 6.450304
+      objectReference: {fileID: 0}
+    - target: {fileID: 7250249254252493494, guid: 5852b5c11bc454e4497c731bda660964, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 20.752262
+      objectReference: {fileID: 0}
+    - target: {fileID: 7250249254252493494, guid: 5852b5c11bc454e4497c731bda660964, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 16.459164
+      objectReference: {fileID: 0}
+    - target: {fileID: 7250249254252493494, guid: 5852b5c11bc454e4497c731bda660964, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.9910537
+      objectReference: {fileID: 0}
+    - target: {fileID: 7250249254252493494, guid: 5852b5c11bc454e4497c731bda660964, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0.08587084
+      objectReference: {fileID: 0}
+    - target: {fileID: 7250249254252493494, guid: 5852b5c11bc454e4497c731bda660964, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0.00881959
+      objectReference: {fileID: 0}
+    - target: {fileID: 7250249254252493494, guid: 5852b5c11bc454e4497c731bda660964, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0.101788774
+      objectReference: {fileID: 0}
+    - target: {fileID: 7250249254252493494, guid: 5852b5c11bc454e4497c731bda660964, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 9.695
+      objectReference: {fileID: 0}
+    - target: {fileID: 7250249254252493494, guid: 5852b5c11bc454e4497c731bda660964, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 2.033
+      objectReference: {fileID: 0}
+    - target: {fileID: 7250249254252493494, guid: 5852b5c11bc454e4497c731bda660964, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 11.901
+      objectReference: {fileID: 0}
+    - target: {fileID: 8334934396081446149, guid: 5852b5c11bc454e4497c731bda660964, type: 3}
+      propertyPath: m_Mass
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 8334934396081446149, guid: 5852b5c11bc454e4497c731bda660964, type: 3}
+      propertyPath: m_AngularDrag
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8334934396081446149, guid: 5852b5c11bc454e4497c731bda660964, type: 3}
+      propertyPath: m_ImplicitCom
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8334934396081446149, guid: 5852b5c11bc454e4497c731bda660964, type: 3}
+      propertyPath: m_CenterOfMass.y
+      value: -5
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
