@@ -80,6 +80,7 @@ MonoBehaviour:
   cameraHandler: {fileID: 1255700635298017498}
   camera: {fileID: 0}
   handledBoat: {fileID: 2498009691586396027}
+  smoothSpeed: 4
   whichPlayer: 1
 --- !u!1 &1255700635298017498
 GameObject:
@@ -286,10 +287,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e61401ade95dfb54f90003d0faba559f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  stability: 0.3
-  maxKiihtyvyys: 40
+  "k\xE4\xE4ntyvyys": 0
+  kiihtyvyys: 0
+  maxKiihtyvyys: 50
   "maxK\xE4\xE4ntyvyys": 20
   amountHit: 0
+  health: 100
   shipRB: {fileID: 8334934396081446149}
   Canonball: {fileID: 6880676199076959359, guid: acb92e6db40eec7478bd9552cf870aa6, type: 3}
   buoyancyPoints:
