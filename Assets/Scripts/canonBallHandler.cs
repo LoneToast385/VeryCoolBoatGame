@@ -1,7 +1,10 @@
 using UnityEngine;
 using System.Collections;
+using Unity.VisualScripting;
 public class canonBallHandler : MonoBehaviour
 {
+    public GameObject cannonballHitParticle;
+
     void Start() { //MOST START LOGIC IN playerController WHERE CANNONBALL IS SPAWN!!
         StartCoroutine(activate());
     }
@@ -11,15 +14,23 @@ public class canonBallHandler : MonoBehaviour
     }
     void OnCollisionEnter(Collision collision) {
         if(collision.collider.tag == "Ship") {
-            damage(collision.collider.gameObject);
+            damage(collision.collider.gameObject, collision.contacts[0]);
         }
-        if(collision.collider.tag == "Water") {
+    }
+    void OnTriggerEnter(Collider other)
+    {
+        if(other.tag == "Water") {
             sink();
         }
     }
-    void damage(GameObject ship) {
+    void damage(GameObject ship, ContactPoint contact) {
         ship.GetComponent<playerController>().amountHit += 1;
         ship.GetComponent<playerController>().health -= 6;
+        Quaternion rot = Quaternion.FromToRotation(Vector3.up, contact.normal);
+        Vector3 pos = contact.point;
+        GameObject particleInstance = Instantiate(cannonballHitParticle, pos, rot);
+        int randInt = Random.Range(1, 3);
+        particleInstance.transform.GetChild(randInt).gameObject.SetActive(true);
         sink();
     }
     void sink() {
