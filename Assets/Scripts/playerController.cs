@@ -4,13 +4,16 @@ using System.Collections;
 
 public class playerController : MonoBehaviour
 {
-    private float kääntyvyys = 0;
-    public float stability = 0.3f;
-    private float kiihtyvyys = 0;
-    public float maxKiihtyvyys = 20;
+    [HideInInspector]
+    public float kääntyvyys = 0;
+    [HideInInspector]
+    public float kiihtyvyys = 0;
+    public float maxKiihtyvyys = 50;
     public float maxKääntyvyys = 1;
-    public int amountHit = 0;
-    private float health = 100;
+    [HideInInspector]
+    public float amountHit = 0;
+    [HideInInspector]
+    public float health = 100;
     private float waterLevelY = 0;
     public Rigidbody shipRB;
     public GameObject Canonball;
@@ -27,7 +30,7 @@ public class playerController : MonoBehaviour
             break;
         case 2:
             movementKeys = new KeyCode[] {
-                KeyCode.UpArrow, KeyCode.LeftArrow, KeyCode.DownArrow, KeyCode.RightArrow, KeyCode.PageUp, KeyCode.PageDown
+                KeyCode.UpArrow, KeyCode.LeftArrow, KeyCode.DownArrow, KeyCode.RightArrow, KeyCode.PageDown, KeyCode.PageUp
             };
             print("Keys assigned for player 2!");
             break;
@@ -39,19 +42,20 @@ public class playerController : MonoBehaviour
     void Update() {
         // -------- KIIHTYVYYS -------------
         if(Input.GetKey(movementKeys[0]) && kiihtyvyys < maxKiihtyvyys) {
-            kiihtyvyys += maxKiihtyvyys / 20;
+            kiihtyvyys += maxKiihtyvyys / 30;
+            print(kiihtyvyys);
         }
         if(Input.GetKey(movementKeys[2]) && kiihtyvyys > 0) {
-            kiihtyvyys -= maxKiihtyvyys / 20;
+            kiihtyvyys -= maxKiihtyvyys / 30;
             if(kiihtyvyys < 0) kiihtyvyys = 0;
         }
         // -------- KIIHTYVYYS -------------
         // -------- KÄÄNTYVYYS -------------
         if(Input.GetKey(movementKeys[1]) && kääntyvyys > -maxKääntyvyys) {
-            kääntyvyys -= maxKääntyvyys / 30;
+            kääntyvyys -= maxKääntyvyys / 60;
         }
         if(Input.GetKey(movementKeys[3]) && kääntyvyys < maxKääntyvyys) {
-            kääntyvyys += maxKääntyvyys / 30;
+            kääntyvyys += maxKääntyvyys / 60;
         }
         // -------- KÄÄNTYVYYS -------------
         // -------- AMPUMINEN -------------
@@ -86,6 +90,7 @@ public class playerController : MonoBehaviour
 
         }
     }
+    //Void to handle all cannon ball spawning logic.
     void kanuunaPalloSpawnaus(int i, GameObject[] kanuunat) 
     {
                 GameObject kanuunanpallo = Instantiate(Canonball, kanuunat[i].transform.position, kanuunat[i].transform.rotation);
@@ -102,13 +107,13 @@ public class playerController : MonoBehaviour
         Quaternion deltaKääntyvyys = Quaternion.Euler(laivanEulerKääntyvyys * Time.fixedDeltaTime);
         shipRB.MoveRotation(shipRB.rotation * deltaKääntyvyys);
 
-        shipRB.AddForce(transform.forward * kiihtyvyys, ForceMode.Force);
+        shipRB.AddForce(transform.forward * kiihtyvyys * 2, ForceMode.Force);
         // -------- Kelluvuus --------------
         foreach (Transform point in buoyancyPoints)
         {
             Vector3 worldPoint = point.position;
 
-            if (worldPoint.y < waterLevelY) // Underwater
+            if (worldPoint.y < waterLevelY)
             {
                 float depth = waterLevelY - worldPoint.y;
                 Vector3 force = Vector3.up * depth * buoyancyStrength;
@@ -118,18 +123,10 @@ public class playerController : MonoBehaviour
         // -------- Kelluvuus ---------------
 
         // -------- Healthia ----------------
-        health -= amountHit / 100;
+        health -= amountHit / 250;
         if(health <= 0) {
             Destroy(this.gameObject);
         }
         // -------- Healthia ----------------
     }
 }
-/*
-            Vector3 xKaantonorm = new Vector3(0.002f * transform.rotation[0],0,0);
-            Quaternion xKaantonormQuat = Quaternion.Euler(xKaantonorm);
-            shipRB.MoveRotation(xKaantonormQuat);
-            Vector3 zKaantonorm = new Vector3(0,transform.rotation.y,0.002f * transform.rotation[2]);
-            Quaternion zKaantonormQuat = Quaternion.Euler(zKaantonorm);
-            shipRB.MoveRotation(zKaantonormQuat);
-*/
