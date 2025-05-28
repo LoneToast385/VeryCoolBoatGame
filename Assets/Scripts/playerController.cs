@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using System.Collections;
+using Unity.Mathematics;
 
 public class playerController : MonoBehaviour
 {
@@ -17,11 +18,16 @@ public class playerController : MonoBehaviour
     private float waterLevelY = 0;
     public Rigidbody shipRB;
     public GameObject Canonball;
+    public GameObject canonballShootSmoke;
+    public GameObject cannonballHitParticle;
     private bool isShootingLeft = false;
     private bool isShootingRight = false;
     private KeyCode[] movementKeys;
     void Start() {
         switch(this.transform.parent.gameObject.GetComponent<playerHandler>().whichPlayer) {
+        case 0:
+          movementKeys = null;
+          break;
         case 1:
             movementKeys = new KeyCode[] {
                 KeyCode.W, KeyCode.A, KeyCode.S, KeyCode.D, KeyCode.E, KeyCode.Q
@@ -93,27 +99,47 @@ public class playerController : MonoBehaviour
     //Void to handle all cannon ball spawning logic.
     void kanuunaPalloSpawnaus(int i, GameObject[] kanuunat) 
     {
-                GameObject kanuunanpallo = Instantiate(Canonball, kanuunat[i].transform.position, kanuunat[i].transform.rotation);
-                kanuunanpallo.GetComponent<Rigidbody>().linearVelocity = this.GetComponent<Rigidbody>().linearVelocity;
-                kanuunanpallo.GetComponent<Rigidbody>().angularVelocity = this.GetComponent<Rigidbody>().angularVelocity;
-                Vector3 ampumaVoima = new Vector3(250f, 100f, 0f);
-                kanuunanpallo.GetComponent<Rigidbody>().AddRelativeForce(ampumaVoima);
+        GameObject kanuunanpallo = Instantiate(Canonball, kanuunat[i].transform.position, kanuunat[i].transform.rotation);
+        Instantiate(canonballShootSmoke, kanuunat[i].transform.position, kanuunat[i].transform.rotation);
+        kanuunanpallo.GetComponent<Rigidbody>().linearVelocity = this.GetComponent<Rigidbody>().linearVelocity;
+        kanuunanpallo.GetComponent<Rigidbody>().angularVelocity = this.GetComponent<Rigidbody>().angularVelocity;
+        Vector3 ampumaVoima = new Vector3(250f, 100f, 0f);
+        kanuunanpallo.GetComponent<Rigidbody>().AddRelativeForce(ampumaVoima);
+    }
+
+    private bool inWater;
+    void OnTriggerEnter(Collider other)
+    {
+        if (other.tag == "Water")
+        {
+            inWater = true;
+        }
+    }
+    void OnTriggerExit(Collider other)
+    {
+        if (other.tag == "Water")
+        {
+            inWater = false;
+        }
     }
     public Transform[] buoyancyPoints;
     public float buoyancyStrength = 5f;
+    [HideInInspector]
+    public bool firstDeath = true;
+    public GameObject GameManager;
     void FixedUpdate()
     {
         Vector3 laivanEulerKääntyvyys = new Vector3(0, kääntyvyys, 0);
         Quaternion deltaKääntyvyys = Quaternion.Euler(laivanEulerKääntyvyys * Time.fixedDeltaTime);
         shipRB.MoveRotation(shipRB.rotation * deltaKääntyvyys);
 
-        shipRB.AddForce(transform.forward * kiihtyvyys * 2, ForceMode.Force);
+        shipRB.AddForce(transform.forward * kiihtyvyys * -2, ForceMode.Force);
         // -------- Kelluvuus --------------
         foreach (Transform point in buoyancyPoints)
         {
             Vector3 worldPoint = point.position;
 
-            if (worldPoint.y < waterLevelY)
+            if (worldPoint.y < waterLevelY && inWater)
             {
                 float depth = waterLevelY - worldPoint.y;
                 Vector3 force = Vector3.up * depth * buoyancyStrength;
@@ -124,9 +150,20 @@ public class playerController : MonoBehaviour
 
         // -------- Healthia ----------------
         health -= amountHit / 250;
-        if(health <= 0) {
-            Destroy(this.gameObject);
+        if (health <= 0)
+        {
+            if (firstDeath)
+            {
+                firstDeath = false;
+                GameManager.GetComponent<GameManager>().endGame(this.transform.parent.gameObject.GetComponent<playerHandler>().whichPlayer);
+            }
+            if (buoyancyStrength > -1)
+                buoyancyStrength -= 0.2f;
         }
         // -------- Healthia ----------------
+        if (this.transform.position.y < -10)
+        {
+            GameManager.GetComponent<GameManager>().endGame(this.transform.parent.gameObject.GetComponent<playerHandler>().whichPlayer);
+        }
     }
 }

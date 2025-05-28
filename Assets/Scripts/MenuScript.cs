@@ -4,11 +4,18 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 public class Menu : MonoBehaviour
 {
-    public void OnPlayButton ()
+    public GameObject whiteOutPanel;
+    public void OnPlayButton()
     {
-        SceneManager.LoadScene(1);
+        whiteOutPanel.SetActive(true);
+        StartCoroutine(loadIntoScene());
     }
-    public void OnQuitButton ()
+    IEnumerator loadIntoScene()
+    {
+        yield return new WaitForSeconds(1.5f);
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+    }
+    public void OnQuitButton()
     {
         Application.Quit();
     }
